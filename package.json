@@ -2,7 +2,12 @@
   "name": "nativescript-node",
   "version": "0.0.1",
   "description": "A Nativescript node convertion module for Android and iOS",
-  "main": "node.js",
+  "nativescript": {
+    "platforms": {
+      "android": "2.3.0",
+      "ios": "2.3.0"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nathanaela/nativescript-node.git"
