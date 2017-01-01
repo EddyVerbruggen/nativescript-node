@@ -5,10 +5,13 @@
   "main": "node.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nathanaela/nativescript-node.git"
+    "url": "git+https://github.com/nathanaela/nativescript-node.git"
   },
   "keywords": [
-    "NativeScript", "node", "nodejs", "io.js"
+    "NativeScript",
+    "node",
+    "nodejs",
+    "io.js"
   ],
   "author": {
     "name": "Nathanael Anderson",

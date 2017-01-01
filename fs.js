@@ -104,7 +104,26 @@ var fs = {
     statSync: function(path) {
         fs.stat(path);
     },
-
+    openSync: function(path, options) {
+      console.log("openSync not implemented, called with params: " + path + ", " + options);
+      // return FSN.getFile(path);
+      return null;
+    },
+    closeSync: function(fd) {
+      console.log("closeSync not implemented, called with param: " + fd);
+      // return FSN.getFile(path);
+    },
+    futimesSync: function(fd, atime, mtime) {
+      console.log("futimesSync not implemented, called with params: " + fd + ", " + atime + ", " + mtime);
+    },
+    readFileSync: function(file, options) {
+      console.log("readFileSync not implemented, called with params: " + file + ", " + options);
+      return null;
+    },
+    writeFile: function(file, data) {
+      console.log("writeFile not implemented, called with params: " + file + ", " + data);
+      throw new Error("Not Implemeted");
+    }
 };
 
 module.exports = fs;
