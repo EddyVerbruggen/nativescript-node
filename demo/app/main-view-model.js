@@ -35,6 +35,13 @@ var DemoAppModel = (function (_super) {
     });
   };
 
+  DemoAppModel.prototype.stat = function () {
+    nodefs.stat(file, function (err, stats) {
+      console.log("stat error: " + err);
+      console.log("stat stats: " + JSON.stringify(stats));
+    });
+  };
+
   return DemoAppModel;
 })(observable.Observable);
 exports.DemoAppModel = DemoAppModel;

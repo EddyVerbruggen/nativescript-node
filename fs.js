@@ -97,10 +97,58 @@ var fs = {
     fs.chmod(path, mode, null);
   },
   stat: function (path, callback) {
-    throw new Error("Not Implemented");
+    if (typeof callback === "function") {
+      if (fs.existsSync(path)) {
+        callback(
+            undefined,
+            // this data is not related to the file, but should be ok for regular 'does the file exist?' usage
+            {
+              "dev": 16777220,
+              "mode": 33188,
+              "nlink": 1,
+              "uid": 501,
+              "gid": 20,
+              "rdev": 0,
+              "blksize": 4096,
+              "ino": 22488095,
+              "size": 101,
+              "blocks": 8,
+              "atime": "2017-04-02T10:21:33.000Z",
+              "mtime": "2017-04-02T10:21:31.000Z",
+              "ctime": "2017-04-02T10:21:31.000Z",
+              "birthtime": "2017-04-02T10:21:31.000Z"
+            }
+        );
+      } else {
+        callback(
+            {"errno": -2, "code": "ENOENT", "syscall": "stat", "path": path},
+            undefined
+        );
+      }
+    }
   },
   statSync: function (path) {
-    fs.stat(path);
+    if (fs.existsSync(path)) {
+      // this data is not related to the file, but should be ok for regular 'does the file exist?' usage
+      return {
+        "dev": 16777220,
+        "mode": 33188,
+        "nlink": 1,
+        "uid": 501,
+        "gid": 20,
+        "rdev": 0,
+        "blksize": 4096,
+        "ino": 22488095,
+        "size": 101,
+        "blocks": 8,
+        "atime": "2017-04-02T10:21:33.000Z",
+        "mtime": "2017-04-02T10:21:31.000Z",
+        "ctime": "2017-04-02T10:21:31.000Z",
+        "birthtime": "2017-04-02T10:21:31.000Z"
+      };
+    } else {
+      return undefined;
+    }
   },
   openSync: function (path, options) {
     console.log("openSync not implemented, called with params: " + path + ", " + options);
