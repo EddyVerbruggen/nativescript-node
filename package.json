@@ -1,6 +1,6 @@
 {
   "name": "nativescript-node",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Nativescript node convertion module for Android and iOS",
   "nativescript": {
     "platforms": {
@@ -16,8 +16,13 @@
     "NativeScript",
     "node",
     "nodejs",
-    "io.js"
+    "io.js",
+    "fs"
   ],
+  "scripts": {
+    "demo.ios": "cd demo && rm -rf node_modules && npm i && tns run ios",
+    "demo.android": "cd demo && rm -rf node_modules && npm i && tns run android"
+  },
   "author": {
     "name": "Nathanael Anderson",
     "email": "nathan@master-technology.com"
