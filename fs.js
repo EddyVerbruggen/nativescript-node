@@ -9,6 +9,7 @@ var FileSystemAccess = require("file-system/file-system-access").FileSystemAcces
 var Folder = require("file-system/file-system").Folder;
 var File = require("file-system/file-system").File;
 var FSN = require('./fs-native');
+var fa = new FileSystemAccess();
 
 "use strict";
 
@@ -20,8 +21,20 @@ var fs = {
   R_OK: 4,
 
   rename: function (oldPath, newPath, callback) {
-    var fa = new FileSystemAccess();
-    fa.rename(oldPath, newPath, callback, callback);
+    // node replaces existing files, {N} fa doesn't, so remove if it exist. Only do that if there is a file to rename.
+    if (fs.existsSync(oldPath) && fs.existsSync(newPath)) {
+      // this is synchronous
+      fa.deleteFile(newPath);
+    }
+
+    // fa.rename is synchronous
+    var error = undefined;
+    fa.rename(oldPath, newPath, function (err) {
+      error = err;
+    });
+    if (typeof callback === "function") {
+      callback(error);
+    }
   },
   renameSync: function (oldPath, newPath) {
     fs.rename(oldPath, newPath, null);
@@ -30,7 +43,6 @@ var fs = {
     callback(fs.existsSync(path));
   },
   existsSync: function (path) {
-    var fa = new FileSystemAccess();
     return fa.fileExists(path);
   },
   access: function (path, mode, callback) {
@@ -116,7 +128,10 @@ var fs = {
               "atime": "2017-04-02T10:21:33.000Z",
               "mtime": "2017-04-02T10:21:31.000Z",
               "ctime": "2017-04-02T10:21:31.000Z",
-              "birthtime": "2017-04-02T10:21:31.000Z"
+              "birthtime": "2017-04-02T10:21:31.000Z",
+              isDirectory: function () {
+                return fa.folderExists(path);
+              }
             }
         );
       } else {
@@ -128,36 +143,31 @@ var fs = {
     }
   },
   statSync: function (path) {
-    if (fs.existsSync(path)) {
-      // this data is not related to the file, but should be ok for regular 'does the file exist?' usage
-      return {
-        "dev": 16777220,
-        "mode": 33188,
-        "nlink": 1,
-        "uid": 501,
-        "gid": 20,
-        "rdev": 0,
-        "blksize": 4096,
-        "ino": 22488095,
-        "size": 101,
-        "blocks": 8,
-        "atime": "2017-04-02T10:21:33.000Z",
-        "mtime": "2017-04-02T10:21:31.000Z",
-        "ctime": "2017-04-02T10:21:31.000Z",
-        "birthtime": "2017-04-02T10:21:31.000Z"
-      };
-    } else {
-      return undefined;
+    console.log("statSync not implemented, called with params: " + path);
+    return {};
+  },
+  open: function (path, flags, mode, callback) {
+    if (typeof mode === "function" && !callback) {
+      callback = mode;
+    }
+    if (typeof callback === "function") {
+      callback();
     }
   },
   openSync: function (path, options) {
-    console.log("openSync not implemented, called with params: " + path + ", " + options);
-    // return FSN.getFile(path);
     return null;
   },
+  close: function (fd, callback) {
+    if (typeof callback === "function") {
+      callback();
+    }
+  },
+  fsync: function (fd, callback) {
+    if (typeof callback === "function") {
+      callback();
+    }
+  },
   closeSync: function (fd) {
-    console.log("closeSync not implemented, called with param: " + fd);
-    // return FSN.getFile(path);
   },
   futimesSync: function (fd, atime, mtime) {
     console.log("futimesSync not implemented, called with params: " + fd + ", " + atime + ", " + mtime);
@@ -167,7 +177,6 @@ var fs = {
     if (typeof options === "function" && !callback) {
       callback = options;
     }
-    var fa = new FileSystemAccess();
     // fa.readText is synchronous
     var error = undefined;
     var contents = fa.readText(path, function (err) {
@@ -178,7 +187,6 @@ var fs = {
     }
   },
   readFileSync: function (path) {
-    var fa = new FileSystemAccess();
     return fa.readText(path);
   },
   write: function (file, data, position, encoding, callback) {
@@ -189,8 +197,6 @@ var fs = {
     if (typeof options === 'function' && !callback) {
       callback = options;
     }
-
-    var fa = new FileSystemAccess();
 
     if (!fs.existsSync(path)) {
       File.fromPath(path);
@@ -206,7 +212,6 @@ var fs = {
     }
   },
   writeFileSync: function (file, data) {
-    var fa = new FileSystemAccess();
     fa.writeText(file, data);
     return undefined;
   },
@@ -230,8 +235,6 @@ var fs = {
     if (typeof options === 'function' && !callback) {
       callback = options;
     }
-
-    var fa = new FileSystemAccess();
 
     if (!fs.existsSync(path)) {
       File.fromPath(path);
